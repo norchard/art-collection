@@ -6,8 +6,8 @@ const router = express.Router();
 
 // Get a list of 50 posts
 router.get("/", async (req, res) => {
-  console.log("got to here");
-  let collection = await db.collection("artwork");
+  console.log("made it to here");
+  let collection = await db.collection("posts");
   let results = await collection.find({}).limit(50).toArray();
 
   res.send(results).status(200);
@@ -38,9 +38,9 @@ router.get("/:id", async (req, res) => {
 
 // Add a new document to the collection
 router.post("/", async (req, res) => {
-  let collection = await db.collection("artwork");
+  let collection = await db.collection("posts");
   let newDocument = req.body;
-  // newDocument.date = new Date();
+  newDocument.date = new Date();
   let result = await collection.insertOne(newDocument);
   res.send(result).status(204);
 });
