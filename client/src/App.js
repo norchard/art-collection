@@ -1,11 +1,18 @@
 import React, { useState } from "react";
 import ArtworkTile from "./components/ArtworkTile";
+import NewEntryForm from "./components/NewEntryForm";
+import { v4 as uuidv4 } from "uuid";
 import "bootstrap";
 
 function App() {
+  const [showForm, setShowForm] = useState(false);
+  const toggleShowForm = () => {
+    setShowForm(!showForm);
+  };
+
   const [data, setData] = useState([
     {
-      id: 1,
+      id: 0,
       artist: "Gustav Klimt",
       name: "The Kiss",
       medium: "Print of Painting",
@@ -13,7 +20,7 @@ function App() {
       dimensions: '11"x14"',
     },
     {
-      id: 2,
+      id: 1,
       artist: "Ryan Putnam",
       name: "Chill",
       medium: "Risograph Print",
@@ -21,7 +28,7 @@ function App() {
       dimensions: "11 x 14",
     },
     {
-      id: 3,
+      id: 2,
       artist: "Ryan Putnam",
       name: "Cairne 02",
       medium: "Ceramic Tile Mounted on Wood",
@@ -29,7 +36,7 @@ function App() {
       dimensions: "11 x 14",
     },
     {
-      id: 4,
+      id: 3,
       artist: "Jessica Hische",
       name: "All This and More",
       medium: "Letterpress Print",
@@ -37,7 +44,7 @@ function App() {
       dimensions: "11 x 14",
     },
     {
-      id: 5,
+      id: 4,
       artist: "Jai Vasicek",
       name: "Nim",
       medium: "Print of a Painting",
@@ -45,7 +52,7 @@ function App() {
       dimensions: "11 x 14",
     },
     {
-      id: 6,
+      id: 5,
       artist: "Anthony Burrill",
       name: "You & Me",
       medium: "Woodblock Print",
@@ -53,6 +60,17 @@ function App() {
       dimensions: "11 x 14",
     },
   ]);
+
+  const onDelete = (id) => {
+    const newData = data.filter((artwork) => artwork.id !== id);
+    setData(newData);
+  };
+
+  const addNewArtwork = (artwork) => {
+    const newData = [...data, { id: uuidv4(), ...artwork }];
+    setData(newData);
+    toggleShowForm();
+  };
 
   // useEffect(() => {
   //   fetch("https://localhost:8080/artwork/")
@@ -65,27 +83,23 @@ function App() {
     <div>
       <header style={{ textAlign: "center", margin: "50px" }}>
         <h1>Art Collection</h1>
-        <button className="btn btn-primary">Add New</button>
-        <form>
-          <input type="text" placeholder="Name" name="Name"></input>
-          <input type="text" placeholder="Artist" name="Artist"></input>
-          <input type="text" placeholder="Medium" name="Medium"></input>
-          <input type="text" placeholder="Date" name="Date"></input>
-          <input type="text" placeholder="Dimensions" name="Dimensions"></input>
-          <input type="file" placeholder="Image"></input>
-          <input type="submit" />
-        </form>
+        <button onClick={toggleShowForm} className="btn btn-primary">
+          {showForm ? "Hide New Artwork Form" : "Show New Artwork Form"}
+        </button>
+        {showForm && <NewEntryForm addNewArtwork={addNewArtwork} />}
       </header>
       {/* {data ? <pre>{JSON.stringify(data, null, 2)}</pre> : "Loading..."} */}
       {data
         ? data.map((artwork) => (
             <ArtworkTile
               key={artwork.id}
+              id={artwork.id}
               artist={artwork.artist}
               name={artwork.name}
               medium={artwork.medium}
               dimensions={artwork.dimensions}
               date={artwork.date}
+              onDelete={onDelete}
             />
           ))
         : "Loading..."}

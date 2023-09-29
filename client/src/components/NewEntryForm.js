@@ -1,0 +1,89 @@
+import React, { useState } from "react";
+
+const NewEntryForm = (params) => {
+  const [name, setName] = useState("");
+  const [artist, setArtist] = useState("");
+  const [medium, setMedium] = useState("");
+  const [date, setDate] = useState("");
+  const [dimensions, setDimensions] = useState("");
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (!name || !artist || !medium || !date || !dimensions) {
+      alert("Please complete all fields");
+      return;
+    }
+    params.addNewArtwork({
+      name: name,
+      artist: artist,
+      medium: medium,
+      date: date,
+      dimensions: dimensions,
+    });
+  };
+
+  return (
+    <form style={{ textAlign: "left", width: 500, margin: "0 auto" }}>
+      <div className="form-group">
+        <label htmlFor="Name">Artwork Name</label>
+        <input
+          className="form-control form-control-sm"
+          type="text"
+          placeholder="The Kiss"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          name="Name"
+        ></input>
+        <label htmlFor="Artist">Artist Name</label>
+        <input
+          className="form-control form-control-sm"
+          type="text"
+          placeholder="Gustav Klimt"
+          value={artist}
+          onChange={(e) => setArtist(e.target.value)}
+          name="Artist"
+        ></input>
+      </div>
+      <div className="form-group">
+        <label htmlFor="Medium">Medium</label>
+        <input
+          className="form-control form-control-sm"
+          type="text"
+          placeholder="Oil Painting"
+          value={medium}
+          onChange={(e) => setMedium(e.target.value)}
+          name="Medium"
+        ></input>
+        <label htmlFor="Date">Date</label>
+        <input
+          className="form-control form-control-sm"
+          type="text"
+          placeholder="1908"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+          name="Date"
+        ></input>
+        <label htmlFor="Dimensions">Dimensions</label>
+        <input
+          className="form-control form-control-sm"
+          type="text"
+          placeholder='20"x20"'
+          value={dimensions}
+          onChange={(e) => setDimensions(e.target.value)}
+          name="Dimensions"
+        ></input>
+      </div>
+      {/* <label for="Image">Image</label>
+      <input
+        class="form-control form-control-sm"
+        type="file"
+        name="Image"
+      ></input> */}
+      <button onClick={handleSubmit} className="btn btn-success" type="submit">
+        Add New Artwork
+      </button>
+    </form>
+  );
+};
+
+export default NewEntryForm;

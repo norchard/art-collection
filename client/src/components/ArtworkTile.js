@@ -12,7 +12,14 @@ const ArtworkTile = (params) => {
         <span>{params.dimensions}</span>
       </p>
       <div className="image"></div>
-      <button className="btn btn-light">Delete</button>
+      <button
+        onClick={() => {
+          params.onDelete(params.id);
+        }}
+        className="btn btn-light"
+      >
+        Delete
+      </button>
       <button className="btn btn-light">Edit</button>
     </div>
   );
