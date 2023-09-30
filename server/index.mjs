@@ -1,21 +1,21 @@
 import express from "express";
-// import cors from "cors";
+import cors from "cors";
 import "./loadEnvironment.mjs";
 // import "express-async-errors";
-import posts from "./routes/posts.mjs";
+import artwork from "./routes/artwork.mjs";
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-// app.use(cors);
+app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {
   res.status(200).send("Hello World");
 });
 
-// Load the /posts routes
-app.use("/posts", posts);
+// Load the /artwork routes
+app.use("/artwork", artwork);
 
 // Global error handling
 app.use((err, _req, res, next) => {

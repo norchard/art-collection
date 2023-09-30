@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ArtworkTile from "./components/ArtworkTile";
 import NewEntryForm from "./components/NewEntryForm";
 import { v4 as uuidv4 } from "uuid";
@@ -77,12 +77,12 @@ function App() {
     setData([...removeArtwork, { ...artwork }]);
   };
 
-  // useEffect(() => {
-  //   fetch("https://localhost:8080/artwork/")
-  //     .then((res) => res.json())
-  //     .then((data) => setData(data))
-  //     .catch((error) => console.error(error));
-  // }, []);
+  useEffect(() => {
+    fetch("https://localhost:8080/artwork/")
+      .then((res) => res.json())
+      .then((data) => setData(data))
+      .catch((error) => console.error(error));
+  }, []);
 
   return (
     <div>
@@ -94,7 +94,6 @@ function App() {
         {showForm && <NewEntryForm addNewArtwork={addNewArtwork} />}
       </header>
       {/* {data ? <pre>{JSON.stringify(data, null, 2)}</pre> : "Loading..."} */}
-      {console.log(data)}
       {data
         ? data
             .sort((a, b) => a.id - b.id)

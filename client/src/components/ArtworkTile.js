@@ -58,7 +58,7 @@ const ArtworkTile = (params) => {
             }
           />
           <button
-            className="btn btn-primary"
+            className="btn btn-success"
             onClick={(e) => handleUpdate(e)}
             type="submit"
           >

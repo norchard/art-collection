@@ -7,7 +7,7 @@ const router = express.Router();
 // Get a list of 50 posts
 router.get("/", async (req, res) => {
   console.log("made it to here");
-  let collection = await db.collection("posts");
+  let collection = await db.collection("artwork");
   let results = await collection.find({}).limit(50).toArray();
 
   res.send(results).status(200);
