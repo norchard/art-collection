@@ -67,8 +67,14 @@ function App() {
   };
 
   const addNewArtwork = (artwork) => {
-    const newData = [...data, { id: uuidv4(), ...artwork }];
+    const newArtwork = { id: uuidv4(), ...artwork };
+    const newData = [...data, newArtwork];
+    console.log(newArtwork);
     setData(newData);
+    fetch("http://localhost:8080/artwork/", {
+      method: "POST",
+      body: newArtwork,
+    });
     toggleShowForm();
   };
 
@@ -78,7 +84,7 @@ function App() {
   };
 
   useEffect(() => {
-    fetch("https://localhost:8080/artwork/")
+    fetch("http://localhost:8080/artwork/")
       .then((res) => res.json())
       .then((data) => setData(data))
       .catch((error) => console.error(error));
