@@ -72,6 +72,11 @@ function App() {
     toggleShowForm();
   };
 
+  const editArtworkEntry = (artwork) => {
+    const removeArtwork = data.filter((item) => item.id !== artwork.id);
+    setData([...removeArtwork, { ...artwork }]);
+  };
+
   // useEffect(() => {
   //   fetch("https://localhost:8080/artwork/")
   //     .then((res) => res.json())
@@ -89,19 +94,23 @@ function App() {
         {showForm && <NewEntryForm addNewArtwork={addNewArtwork} />}
       </header>
       {/* {data ? <pre>{JSON.stringify(data, null, 2)}</pre> : "Loading..."} */}
+      {console.log(data)}
       {data
-        ? data.map((artwork) => (
-            <ArtworkTile
-              key={artwork.id}
-              id={artwork.id}
-              artist={artwork.artist}
-              name={artwork.name}
-              medium={artwork.medium}
-              dimensions={artwork.dimensions}
-              date={artwork.date}
-              onDelete={onDelete}
-            />
-          ))
+        ? data
+            .sort((a, b) => a.id - b.id)
+            .map((artwork) => (
+              <ArtworkTile
+                key={artwork.id}
+                id={artwork.id}
+                artist={artwork.artist}
+                name={artwork.name}
+                medium={artwork.medium}
+                dimensions={artwork.dimensions}
+                date={artwork.date}
+                onDelete={onDelete}
+                editArtworkEntry={editArtworkEntry}
+              />
+            ))
         : "Loading..."}
     </div>
   );
