@@ -13,19 +13,6 @@ router.get("/", async (req, res) => {
   res.send(results).status(200);
 });
 
-// // Fetches the latest posts
-// router.get("/latest", async (req, res) => {
-//   let collection = await db.collection("posts");
-//   let results = await collection
-//     .aggregate([
-//       { $project: { author: 1, title: 1, tags: 1, date: 1 } },
-//       { $sort: { date: -1 } },
-//       { $limit: 3 },
-//     ])
-//     .toArray();
-//   res.send(results).status(200);
-// });
-
 // // Get a single post
 // router.get("/:id", async (req, res) => {
 //   let collection = await db.collection("posts");
@@ -49,7 +36,7 @@ router.post("/", async (req, res) => {
 
 // // Update an artwork entry
 router.put("/:id", async (req, res) => {
-  const query = { id: req.params.id };
+  const query = { _id: new ObjectId(req.params.id) };
   const updates = req.body;
   console.log(req.body);
 
@@ -61,7 +48,7 @@ router.put("/:id", async (req, res) => {
 
 // Delete an entry
 router.delete("/:id", async (req, res) => {
-  const query = { id: req.params.id };
+  const query = { _id: new ObjectId(req.params.id) };
 
   const collection = db.collection("artwork");
   let result = await collection.deleteOne(query);

@@ -63,29 +63,30 @@ function App() {
 
   const onDelete = (id) => {
     const newData = data.filter((artwork) => artwork.id !== id);
-    setData(newData);
     fetch(`http://localhost:8080/artwork/${id}`, {
       method: "DELETE",
-    });
+    }).then(setData(newData));
   };
 
-  const addNewArtwork = (artwork) => {
-    const newArtwork = { id: uuidv4(), ...artwork };
-    const newData = [...data, newArtwork];
-    console.log(JSON.stringify(newArtwork));
-    setData(newData);
-    console.log(newArtwork);
+  const addNewArtwork = async (artwork) => {
     fetch("http://localhost:8080/artwork/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(newArtwork),
-    });
-    toggleShowForm();
+      body: JSON.stringify(artwork),
+    })
+      .then((res) => res.json())
+      .then((id) => {
+        const newArtwork = { id: id, ...artwork };
+        const newData = [...data, newArtwork];
+        setData(newData);
+        toggleShowForm();
+      });
   };
 
   const editArtworkEntry = (artwork) => {
+    console.log(artwork);
     const removeArtwork = data.filter((item) => item.id !== artwork.id);
     setData([...removeArtwork, { ...artwork }]);
     fetch(`http://localhost:8080/artwork/${artwork.id}`, {
@@ -94,7 +95,7 @@ function App() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(artwork),
-    });
+    }).catch((err) => console.error(err));
   };
 
   useEffect(() => {
