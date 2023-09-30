@@ -10,70 +10,77 @@ function App() {
     setShowForm(!showForm);
   };
 
-  const [data, setData] = useState([
-    {
-      id: 0,
-      artist: "Gustav Klimt",
-      name: "The Kiss",
-      medium: "Print of Painting",
-      date: "1908",
-      dimensions: '11"x14"',
-    },
-    {
-      id: 1,
-      artist: "Ryan Putnam",
-      name: "Chill",
-      medium: "Risograph Print",
-      date: "2023",
-      dimensions: "11 x 14",
-    },
-    {
-      id: 2,
-      artist: "Ryan Putnam",
-      name: "Cairne 02",
-      medium: "Ceramic Tile Mounted on Wood",
-      date: "2023",
-      dimensions: "11 x 14",
-    },
-    {
-      id: 3,
-      artist: "Jessica Hische",
-      name: "All This and More",
-      medium: "Letterpress Print",
-      date: "2023",
-      dimensions: "11 x 14",
-    },
-    {
-      id: 4,
-      artist: "Jai Vasicek",
-      name: "Nim",
-      medium: "Print of a Painting",
-      date: "2023",
-      dimensions: "11 x 14",
-    },
-    {
-      id: 5,
-      artist: "Anthony Burrill",
-      name: "You & Me",
-      medium: "Woodblock Print",
-      date: "2023",
-      dimensions: "11 x 14",
-    },
-  ]);
+  const [data, setData] = useState([]);
+  //   {
+  //     id: 0,
+  //     artist: "Gustav Klimt",
+  //     name: "The Kiss",
+  //     medium: "Print of Painting",
+  //     date: "1908",
+  //     dimensions: '11"x14"',
+  //   },
+  //   {
+  //     id: 1,
+  //     artist: "Ryan Putnam",
+  //     name: "Chill",
+  //     medium: "Risograph Print",
+  //     date: "2023",
+  //     dimensions: "11 x 14",
+  //   },
+  //   {
+  //     id: 2,
+  //     artist: "Ryan Putnam",
+  //     name: "Cairne 02",
+  //     medium: "Ceramic Tile Mounted on Wood",
+  //     date: "2023",
+  //     dimensions: "11 x 14",
+  //   },
+  //   {
+  //     id: 3,
+  //     artist: "Jessica Hische",
+  //     name: "All This and More",
+  //     medium: "Letterpress Print",
+  //     date: "2023",
+  //     dimensions: "11 x 14",
+  //   },
+  //   {
+  //     id: 4,
+  //     artist: "Jai Vasicek",
+  //     name: "Nim",
+  //     medium: "Print of a Painting",
+  //     date: "2023",
+  //     dimensions: "11 x 14",
+  //   },
+  //   {
+  //     id: 5,
+  //     artist: "Anthony Burrill",
+  //     name: "You & Me",
+  //     medium: "Woodblock Print",
+  //     date: "2023",
+  //     dimensions: "11 x 14",
+  //   },
+  // ]);
 
   const onDelete = (id) => {
     const newData = data.filter((artwork) => artwork.id !== id);
     setData(newData);
+    fetch(`http://localhost:8080/artwork/${id}`, {
+      method: "DELETE",
+    });
   };
 
   const addNewArtwork = (artwork) => {
     const newArtwork = { id: uuidv4(), ...artwork };
     const newData = [...data, newArtwork];
-    console.log(newArtwork);
+    console.log(JSON.stringify(newArtwork));
     setData(newData);
+    console.log(newArtwork);
     fetch("http://localhost:8080/artwork/", {
       method: "POST",
-      body: newArtwork,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newArtwork),
     });
     toggleShowForm();
   };
@@ -81,6 +88,13 @@ function App() {
   const editArtworkEntry = (artwork) => {
     const removeArtwork = data.filter((item) => item.id !== artwork.id);
     setData([...removeArtwork, { ...artwork }]);
+    fetch(`http://localhost:8080/artwork/${artwork.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(artwork),
+    });
   };
 
   useEffect(() => {

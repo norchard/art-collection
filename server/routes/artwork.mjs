@@ -39,34 +39,35 @@ router.get("/", async (req, res) => {
 // Add a new document to the collection
 router.post("/", async (req, res) => {
   let collection = await db.collection("artwork");
+  console.log(req.body);
   let newDocument = req.body;
   // newDocument.date = new Date();
   let result = await collection.insertOne(newDocument);
-  res.send(result).status(204);
+  console.log(result.insertedId);
+  res.send(result.insertedId).status(204);
 });
 
-// // Update the post with a new comment
-// router.patch("/comment/:id", async (req, res) => {
-//   const query = { _id: ObjectId(req.params.id) };
-//   const updates = {
-//     $push: { comments: req.body },
-//   };
+// // Update an artwork entry
+router.put("/:id", async (req, res) => {
+  const query = { id: req.params.id };
+  const updates = req.body;
+  console.log(req.body);
 
-//   let collection = await db.collection("posts");
-//   let result = await collection.updateOne(query, updates);
+  let collection = await db.collection("artwork");
+  let result = await collection.updateOne(query, updates);
 
-//   res.send(result).status(200);
-// });
+  res.send(result).status(200);
+});
 
-// // Delete an entry
-// router.delete("/:id", async (req, res) => {
-//   const query = { _id: ObjectId(req.params.id) };
+// Delete an entry
+router.delete("/:id", async (req, res) => {
+  const query = { id: req.params.id };
 
-//   const collection = db.collection("posts");
-//   let result = await collection.deleteOne(query);
+  const collection = db.collection("artwork");
+  let result = await collection.deleteOne(query);
 
-//   res.send(result).status(200);
-// });
+  res.send(result).status(200);
+});
 
 export default router;
 
