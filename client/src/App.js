@@ -62,13 +62,20 @@ function App() {
   // ]);
 
   const onDelete = (id) => {
-    const newData = data.filter((artwork) => artwork.id !== id);
     fetch(`http://localhost:8080/artwork/${id}`, {
       method: "DELETE",
-    }).then(setData(newData));
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.deletedCount === 1) {
+          const newData = data.filter((artwork) => artwork._id !== id);
+          setData(newData);
+        }
+      })
+      .catch((error) => console.error(error));
   };
 
-  const addNewArtwork = async (artwork) => {
+  const addNewArtwork = (artwork) => {
     fetch("http://localhost:8080/artwork/", {
       method: "POST",
       headers: {
@@ -78,7 +85,7 @@ function App() {
     })
       .then((res) => res.json())
       .then((id) => {
-        const newArtwork = { id: id, ...artwork };
+        const newArtwork = { _id: id, ...artwork };
         const newData = [...data, newArtwork];
         setData(newData);
         toggleShowForm();
@@ -86,16 +93,26 @@ function App() {
   };
 
   const editArtworkEntry = (artwork) => {
-    console.log(artwork);
-    const removeArtwork = data.filter((item) => item.id !== artwork.id);
-    setData([...removeArtwork, { ...artwork }]);
-    fetch(`http://localhost:8080/artwork/${artwork.id}`, {
+    const { _id, ...restOfArtwork } = artwork;
+    fetch(`http://localhost:8080/artwork/${_id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(artwork),
-    }).catch((err) => console.error(err));
+      body: JSON.stringify(restOfArtwork),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.modifiedCount === 1) {
+          const removeArtwork = data.filter((item) => item._id !== artwork._id);
+          const newData = [...removeArtwork, artwork].sort(
+            (a, b) => a._id - b._id
+          );
+          console.log(newData);
+          setData(newData);
+        }
+      })
+      .catch((error) => console.error(error));
   };
 
   useEffect(() => {
@@ -117,16 +134,11 @@ function App() {
       {/* {data ? <pre>{JSON.stringify(data, null, 2)}</pre> : "Loading..."} */}
       {data
         ? data
-            .sort((a, b) => a.id - b.id)
+            .sort((a, b) => a._id - b._id)
             .map((artwork) => (
               <ArtworkTile
-                key={artwork.id}
-                id={artwork.id}
-                artist={artwork.artist}
-                name={artwork.name}
-                medium={artwork.medium}
-                dimensions={artwork.dimensions}
-                date={artwork.date}
+                key={artwork._id}
+                artwork={artwork}
                 onDelete={onDelete}
                 editArtworkEntry={editArtworkEntry}
               />
@@ -135,25 +147,5 @@ function App() {
     </div>
   );
 }
-// function App() {
-//   return (
-//     <div className="App">
-//       <header className="App-header">
-//         <img src={logo} className="App-logo" alt="logo" />
-//         <p>
-//           Edit <code>src/App.js</code> and save to reload.
-//         </p>
-//         <a
-//           className="App-link"
-//           href="https://reactjs.org"
-//           target="_blank"
-//           rel="noopener noreferrer"
-//         >
-//           Learn React
-//         </a>
-//       </header>
-//     </div>
-//   );
-// }
 
 export default App;

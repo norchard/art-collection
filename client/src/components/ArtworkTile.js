@@ -5,7 +5,7 @@ import "./artworkTile.css";
 
 const ArtworkTile = (params) => {
   const [edit, updateEdit] = useState(false);
-  const [artwork, updateArtwork] = useState(params);
+  const [artwork, updateArtwork] = useState(params.artwork);
 
   const handleUpdate = (event) => {
     event.preventDefault();
@@ -79,7 +79,7 @@ const ArtworkTile = (params) => {
       {!edit && (
         <button
           onClick={() => {
-            params.onDelete(params.id);
+            params.onDelete(artwork._id);
           }}
           className="btn delete-btn"
         >

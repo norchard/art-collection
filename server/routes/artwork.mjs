@@ -8,7 +8,7 @@ const router = express.Router();
 router.get("/", async (req, res) => {
   console.log("made it to here");
   let collection = await db.collection("artwork");
-  let results = await collection.find({}).limit(50).toArray();
+  let results = await collection.find({}).toArray();
 
   res.send(results).status(200);
 });
@@ -26,9 +26,7 @@ router.get("/", async (req, res) => {
 // Add a new document to the collection
 router.post("/", async (req, res) => {
   let collection = await db.collection("artwork");
-  console.log(req.body);
   let newDocument = req.body;
-  // newDocument.date = new Date();
   let result = await collection.insertOne(newDocument);
   console.log(result.insertedId);
   res.send(result.insertedId).status(204);
@@ -37,7 +35,7 @@ router.post("/", async (req, res) => {
 // // Update an artwork entry
 router.put("/:id", async (req, res) => {
   const query = { _id: new ObjectId(req.params.id) };
-  const updates = req.body;
+  const updates = { $set: req.body };
   console.log(req.body);
 
   let collection = await db.collection("artwork");
