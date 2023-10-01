@@ -6,10 +6,11 @@ const NewEntryForm = (params) => {
   const [medium, setMedium] = useState("");
   const [date, setDate] = useState("");
   const [dimensions, setDimensions] = useState("");
+  const [image, setImage] = useState(null);
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (!name || !artist || !medium || !date || !dimensions) {
+    if (!name || !artist || !medium || !date || !dimensions || !image) {
       alert("Please complete all fields");
       return;
     }
@@ -19,7 +20,13 @@ const NewEntryForm = (params) => {
       medium: medium,
       date: date,
       dimensions: dimensions,
+      image: image,
     });
+  };
+
+  const handleImageChange = (e) => {
+    const img = e.target.files[0];
+    setImage(img);
   };
 
   return (
@@ -72,13 +79,15 @@ const NewEntryForm = (params) => {
           onChange={(e) => setDimensions(e.target.value)}
           name="Dimensions"
         ></input>
+        <label htmlFor="image">Image</label>
+        <input
+          className="form-control form-control-sm"
+          type="file"
+          accept="image/jpg"
+          name="Image"
+          onChange={handleImageChange}
+        />
       </div>
-      {/* <label for="Image">Image</label>
-      <input
-        class="form-control form-control-sm"
-        type="file"
-        name="Image"
-      ></input> */}
       <button onClick={handleSubmit} className="btn btn-success" type="submit">
         Add New Artwork
       </button>
