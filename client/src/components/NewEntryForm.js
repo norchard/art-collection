@@ -24,11 +24,6 @@ const NewEntryForm = (params) => {
     });
   };
 
-  const handleImageChange = (e) => {
-    const img = e.target.files[0];
-    setImage(img);
-  };
-
   return (
     <form style={{ textAlign: "left", width: 500, margin: "0 auto" }}>
       <div className="form-group">
@@ -85,7 +80,7 @@ const NewEntryForm = (params) => {
           type="file"
           accept="image/jpg"
           name="Image"
-          onChange={handleImageChange}
+          onChange={(e) => setImage(e.target.files[0])}
         />
       </div>
       <button onClick={handleSubmit} className="btn btn-success" type="submit">
