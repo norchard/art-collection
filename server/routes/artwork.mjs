@@ -1,8 +1,22 @@
 import express from "express";
 import db from "../db/connection.mjs";
 import { ObjectId } from "mongodb";
+import AWS from "aws-sdk";
 
 const router = express.Router();
+
+const S3_BUCKET = "art--collection";
+const REGION = "us-east-1";
+
+AWS.config.update({
+  accessKeyId: process.env.AWS_ACCESS_KEY,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+});
+
+const myBucket = new AWS.S3({
+  params: { Bucket: S3_BUCKET },
+  region: REGION,
+});
 
 // Get a list of 50 posts
 router.get("/", async (req, res) => {
@@ -27,6 +41,18 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
   let collection = await db.collection("artwork");
   let newDocument = req.body;
+
+  const params = {
+    ACL: "public-read",
+    Body: req.body.image,
+    Bucket: S3_BUCKET,
+    Key: req.body.image.name,
+  };
+
+  myBucket.putObject(params).send((err) => {
+    if (err) console.log(err);
+  });
+
   let result = await collection.insertOne(newDocument);
   console.log(result.insertedId);
   res.send(result.insertedId).status(204);

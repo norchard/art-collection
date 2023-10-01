@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ArtworkTile from "./components/ArtworkTile";
 import NewEntryForm from "./components/NewEntryForm";
-import { v4 as uuidv4 } from "uuid";
+// import { v4 as uuidv4 } from "uuid";
 import "bootstrap";
 
 function App() {
