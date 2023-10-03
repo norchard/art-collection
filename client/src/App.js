@@ -76,12 +76,21 @@ function App() {
   };
 
   const addNewArtwork = (artwork) => {
+    console.log("addNewArtwork");
+    // Create an object of formData
+    let formData = new FormData();
+
+    // Update the formData object
+    for (let key in artwork) {
+      formData.append(key, artwork[key]);
+    }
+
     fetch("http://localhost:8080/artwork/", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+      header: {
+        "Content-Type": "multipart/form-data",
       },
-      body: JSON.stringify(artwork),
+      body: formData,
     })
       .then((res) => res.json())
       .then((id) => {

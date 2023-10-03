@@ -1,5 +1,5 @@
 .artwork-tile {
-  background-color: rgb(219, 212, 208);
+  background-color: rgb(235, 232, 228);
   height: 600px;
   min-width: 30%;
   max-width: 40%;
@@ -30,4 +30,10 @@
 
 .deleteIcon:hover {
   color: rgb(81, 74, 74);
+}
+
+img {
+  max-width: 100%;
+  /* object-fit: cover; */
+  max-height: 300px;
 }

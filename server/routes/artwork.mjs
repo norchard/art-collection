@@ -2,25 +2,35 @@ import express from "express";
 import db from "../db/connection.mjs";
 import { ObjectId } from "mongodb";
 import AWS from "aws-sdk";
+import multer from "multer";
+import multerS3 from "multer-s3";
 
 const router = express.Router();
 
 const S3_BUCKET = "art--collection";
-const REGION = "us-east-1";
 
 AWS.config.update({
   accessKeyId: process.env.AWS_ACCESS_KEY,
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
 });
 
-const myBucket = new AWS.S3({
-  params: { Bucket: S3_BUCKET },
-  region: REGION,
+const s3 = new AWS.S3();
+const upload = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: S3_BUCKET,
+    acl: "public-read",
+    contentType: multerS3.AUTO_CONTENT_TYPE,
+    key: function (req, file, cb) {
+      cb(null, `${Date.now().toString()}-${file.originalname}`);
+    },
+  }),
 });
+
+const uploadImage = upload.single("image");
 
 // Get a list of 50 posts
 router.get("/", async (req, res) => {
-  console.log("made it to here");
   let collection = await db.collection("artwork");
   let results = await collection.find({}).toArray();
 
@@ -37,24 +47,17 @@ router.get("/", async (req, res) => {
 //   else res.send(result).status(200);
 // });
 
+// router.post("/image", upload.single("image"), async (req, res) => {
+//   res.send(`s3://art--collection/${req.file.key}`);
+// });
+
 // Add a new document to the collection
-router.post("/", async (req, res) => {
+router.post("/", upload.single("image"), async (req, res) => {
+  const imageKey = req.file.key;
   let collection = await db.collection("artwork");
-  let newDocument = req.body;
-
-  const params = {
-    ACL: "public-read",
-    Body: req.body.image,
-    Bucket: S3_BUCKET,
-    Key: req.body.image.name,
-  };
-
-  myBucket.putObject(params).send((err) => {
-    if (err) console.log(err);
-  });
+  let newDocument = { ...req.body, image: imageKey };
 
   let result = await collection.insertOne(newDocument);
-  console.log(result.insertedId);
   res.send(result.insertedId).status(204);
 });
 
@@ -75,7 +78,17 @@ router.delete("/:id", async (req, res) => {
   const query = { _id: new ObjectId(req.params.id) };
 
   const collection = db.collection("artwork");
+  let entry = await collection.findOne(query);
+  console.log(entry);
   let result = await collection.deleteOne(query);
+
+  s3.deleteObject(
+    {
+      Bucket: S3_BUCKET,
+      Key: entry.image,
+    },
+    (err, data) => {}
+  );
 
   res.send(result).status(200);
 });

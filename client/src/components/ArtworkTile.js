@@ -74,6 +74,10 @@ const ArtworkTile = (params) => {
             <span>{artwork.date}</span>&nbsp;&nbsp;
             <span>{artwork.dimensions}</span>
           </p>
+          <img
+            alt={artwork.name}
+            src={`https://art--collection.s3.amazonaws.com/${artwork.image}`}
+          />
         </Fragment>
       )}
       {!edit && (
@@ -86,11 +90,13 @@ const ArtworkTile = (params) => {
           <FaRegTimesCircle className="deleteIcon" />
         </button>
       )}
-      {!edit && (
-        <button onClick={() => updateEdit(!edit)} className="btn btn-light">
-          Edit
-        </button>
-      )}
+      <div>
+        {!edit && (
+          <button onClick={() => updateEdit(!edit)} className="btn btn-light">
+            Edit
+          </button>
+        )}
+      </div>
     </div>
   );
 };
