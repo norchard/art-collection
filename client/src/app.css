@@ -1,0 +1,9 @@
+.title {
+  font-size: 50px;
+  color: rgb(81, 74, 74);
+}
+.shuffle {
+  position: absolute;
+  top: 10px;
+  left: 20px;
+}

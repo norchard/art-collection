@@ -3,6 +3,7 @@ import ArtworkTile from "./components/ArtworkTile";
 import NewEntryForm from "./components/NewEntryForm";
 // import { v4 as uuidv4 } from "uuid";
 import "bootstrap";
+import "./app.css";
 
 function App() {
   const [showForm, setShowForm] = useState(false);
@@ -76,7 +77,6 @@ function App() {
   };
 
   const addNewArtwork = (artwork) => {
-    console.log("addNewArtwork");
     // Create an object of formData
     let formData = new FormData();
 
@@ -117,7 +117,6 @@ function App() {
           const newData = [...removeArtwork, artwork].sort(
             (a, b) => a._id - b._id
           );
-          console.log(newData);
           setData(newData);
         }
       })
@@ -134,8 +133,8 @@ function App() {
   return (
     <div>
       <header style={{ textAlign: "center", margin: "50px" }}>
-        <h1>Art Collection</h1>
-        <button onClick={toggleShowForm} className="btn btn-primary">
+        <h1 className="title">Art Collection</h1>
+        <button onClick={toggleShowForm} className="btn btn-light btn-sm">
           {showForm ? "Hide New Artwork Form" : "Show New Artwork Form"}
         </button>
         {showForm && <NewEntryForm addNewArtwork={addNewArtwork} />}

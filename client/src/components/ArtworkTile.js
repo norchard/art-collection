@@ -92,7 +92,10 @@ const ArtworkTile = (params) => {
       )}
       <div>
         {!edit && (
-          <button onClick={() => updateEdit(!edit)} className="btn btn-light">
+          <button
+            onClick={() => updateEdit(!edit)}
+            className="edit-btn btn btn-light btn-sm"
+          >
             Edit
           </button>
         )}

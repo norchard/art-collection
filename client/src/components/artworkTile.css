@@ -1,8 +1,7 @@
 .artwork-tile {
   background-color: rgb(235, 232, 228);
-  height: 600px;
-  min-width: 30%;
-  max-width: 40%;
+  height: 500px;
+  width: 22.5%;
   padding: 20px;
   margin: 20px;
   float: left;
@@ -19,13 +18,13 @@
 
 .delete-btn {
   position: absolute;
-  top: 10px;
-  right: 5px;
+  top: 3px;
+  right: 3px;
 }
 
 .deleteIcon {
-  font-size: 30px;
-  color: rgb(122, 116, 116);
+  font-size: 25px;
+  color: rgb(172, 167, 167);
 }
 
 .deleteIcon:hover {
@@ -36,4 +35,14 @@ img {
   max-width: 100%;
   /* object-fit: cover; */
   max-height: 300px;
+}
+
+.btn {
+  margin-top: 10px;
+}
+
+.edit-btn {
+  position: absolute;
+  bottom: 20px;
+  right: 15px;
 }
