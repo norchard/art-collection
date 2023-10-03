@@ -2,8 +2,9 @@ import express from "express";
 import cors from "cors";
 import "./loadEnvironment.mjs";
 // import "express-async-errors";
-import artwork from "./routes/artwork.mjs";
-import auth from "./routes/auth.mjs";
+import artworkRoutes from "./routes/artwork.mjs";
+import authRoutes from "./routes/auth.mjs";
+import auth from "./auth.mjs";
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -16,10 +17,10 @@ app.get("/", (req, res) => {
 });
 
 // Load the /artwork routes
-app.use("/", auth);
+app.use("/", authRoutes);
 
 // Load the /artwork routes
-app.use("/artwork", artwork);
+app.use("/artwork", auth, artworkRoutes);
 
 // Global error handling
 app.use((err, _req, res, next) => {
