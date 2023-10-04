@@ -15,6 +15,7 @@ router.post("/register", (req, res) => {
     .hash(req.body.password, 10)
     .then((hashedPassword) => {
       const user = new User({
+        name: req.body.name,
         email: req.body.email,
         password: hashedPassword,
       });
@@ -82,6 +83,7 @@ router.post("/login", (request, response) => {
           response.status(200).send({
             message: "Login Successful",
             email: user.email,
+            name: user.name,
             token,
           });
         })

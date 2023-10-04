@@ -32,9 +32,9 @@ const uploadImage = upload.single("image");
 // Get a list of 50 posts
 router.get("/", async (req, res) => {
   console.log(req.user);
-  const query = { user: req.user };
+  // const query = { user: req.user };
   let collection = await db.collection("artwork");
-  let results = await collection.find(query).toArray();
+  let results = await collection.find({}).toArray();
 
   res.send(results).status(200);
 });

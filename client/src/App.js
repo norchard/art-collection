@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ArtworkTile from "./components/ArtworkTile";
 import NewEntryForm from "./components/NewEntryForm";
-import LoginForm from "./components/LoginForm";
+import AuthForms from "./components/AuthForms";
 // import { v4 as uuidv4 } from "uuid";
 import "bootstrap";
 import "./app.css";
@@ -10,6 +10,9 @@ import Cookies from "universal-cookie";
 function App() {
   const [showForm, setShowForm] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
+  const [user, setUser] = useState("");
+
+  const cookies = new Cookies(null, { path: "/" });
 
   const toggleShowForm = () => {
     setShowForm(!showForm);
@@ -138,9 +141,14 @@ function App() {
     })
       .then((res) => res.json())
       .then((res) => {
-        const cookies = new Cookies();
-        cookies.set("authKey", res.key, { path: "/" });
+        console.log("res from login", res);
+        console.log("setting cookie...");
+
+        cookies.set("authToken", res.token, { path: "/" });
         setLoggedIn(true);
+        setUser(res.name);
+        console.log("fetching artwork...");
+        fetchArtwork();
       })
       .catch((err) => console.err(err));
 
@@ -148,20 +156,45 @@ function App() {
     console.log(password);
   };
 
-  const handleRegister = (e, email, password) => {
+  const handleRegister = (e, name, email, password) => {
     e.preventDefault();
     console.log("registering...");
     fetch("http://localhost:8080/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authentication: cookies.get("authToken"),
       },
-      body: JSON.stringify({ email: email, password: password }),
+      body: JSON.stringify({ name: name, email: email, password: password }),
     });
   };
 
+  const fetchArtwork = () => {
+    console.log("cookie", cookies.get("authToken"));
+    fetch("http://localhost:8080/artwork/", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${cookies.get("authToken")}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setData(data);
+      })
+      .catch((error) => console.error(error));
+  };
+
+  const handleLogout = () => {
+    cookies.remove("authToken");
+    setLoggedIn(false);
+    setUser("");
+  };
+
   // useEffect(() => {
-  //   fetch("http://localhost:8080/artwork/")
+  //   fetch("http://localhost:8080/artwork/", {
+  //     method: "GET",
+  //   })
   //     .then((res) => res.json())
   //     .then((data) => {
   //       console.log(data);
@@ -173,9 +206,17 @@ function App() {
   return (
     <div>
       <header style={{ textAlign: "center", margin: "50px" }}>
-        <h1 className="title">Art Collection</h1>
+        {loggedIn && (
+          <button
+            onClick={handleLogout}
+            className="logout-button btn btn-dark btn-sm"
+          >
+            Log Out
+          </button>
+        )}
+        <h1 className="title">{user && `${user}'s `}Art Collection</h1>
         {!loggedIn && (
-          <LoginForm
+          <AuthForms
             handleLogin={handleLogin}
             handleRegister={handleRegister}
           />
@@ -188,17 +229,19 @@ function App() {
         {showForm && <NewEntryForm addNewArtwork={addNewArtwork} />}
       </header>
       {/* {data ? <pre>{JSON.stringify(data, null, 2)}</pre> : "Loading..."} */}
-      {/* {loggedIn &&
-        data
-          .sort((a, b) => a._id - b._id)
-          .map((artwork) => (
-            <ArtworkTile
-              key={artwork._id}
-              artwork={artwork}
-              onDelete={onDelete}
-              editArtworkEntry={editArtworkEntry}
-            />
-          ))} */}
+      {loggedIn &&
+        (data
+          ? data
+              .sort((a, b) => a._id - b._id)
+              .map((artwork) => (
+                <ArtworkTile
+                  key={artwork._id}
+                  artwork={artwork}
+                  onDelete={onDelete}
+                  editArtworkEntry={editArtworkEntry}
+                />
+              ))
+          : "Loading...")}
     </div>
   );
 }

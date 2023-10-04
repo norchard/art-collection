@@ -2,12 +2,27 @@ import React, { Fragment, useState } from "react";
 
 const LoginForm = (params) => {
   const [register, setRegister] = useState(false);
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   return (
     <Fragment>
       <form style={{ width: 300, margin: "auto" }}>
+        {register && (
+          <Fragment>
+            <label htmlFor="Name">Name: </label>
+            <input
+              value={name}
+              onChange={(e) => {
+                setName(e.target.value);
+              }}
+              className="form-control form-control-sm"
+              name="Name"
+              type="text"
+            />
+          </Fragment>
+        )}
         <label htmlFor="Email">Email: </label>
         <input
           value={email}
@@ -26,14 +41,14 @@ const LoginForm = (params) => {
           }}
           className="form-control form-control-sm"
           name="Password"
-          type="text"
+          type="password"
         />
         <button
           type="submit"
           className="btn btn-success"
           onClick={(e) => {
             register
-              ? params.handleRegister(e, email, password)
+              ? params.handleRegister(e, name, email, password)
               : params.handleLogin(e, email, password);
           }}
         >

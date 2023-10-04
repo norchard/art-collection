@@ -16,7 +16,7 @@ app.get("/", (req, res) => {
   res.status(200).send("Hello World");
 });
 
-// Load the /artwork routes
+// Load the /authentication routes
 app.use("/", authRoutes);
 
 // Load the /artwork routes
