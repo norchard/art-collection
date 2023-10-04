@@ -1,17 +1,21 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import ArtworkTile from "./components/ArtworkTile";
 import NewEntryForm from "./components/NewEntryForm";
+import LoginForm from "./components/LoginForm";
 // import { v4 as uuidv4 } from "uuid";
 import "bootstrap";
 import "./app.css";
+import Cookies from "universal-cookie";
 
 function App() {
   const [showForm, setShowForm] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
+
   const toggleShowForm = () => {
     setShowForm(!showForm);
   };
 
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(null);
   //   {
   //     id: 0,
   //     artist: "Gustav Klimt",
@@ -123,35 +127,78 @@ function App() {
       .catch((error) => console.error(error));
   };
 
-  useEffect(() => {
-    fetch("http://localhost:8080/artwork/")
+  const handleLogin = (e, email, password) => {
+    e.preventDefault();
+    fetch("http://localhost:8080/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email: email, password: password }),
+    })
       .then((res) => res.json())
-      .then((data) => setData(data))
-      .catch((error) => console.error(error));
-  }, []);
+      .then((res) => {
+        const cookies = new Cookies();
+        cookies.set("authKey", res.key, { path: "/" });
+        setLoggedIn(true);
+      })
+      .catch((err) => console.err(err));
+
+    console.log(email);
+    console.log(password);
+  };
+
+  const handleRegister = (e, email, password) => {
+    e.preventDefault();
+    console.log("registering...");
+    fetch("http://localhost:8080/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email: email, password: password }),
+    });
+  };
+
+  // useEffect(() => {
+  //   fetch("http://localhost:8080/artwork/")
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       console.log(data);
+  //       setData(data);
+  //     })
+  //     .catch((error) => console.error(error));
+  // }, []);
 
   return (
     <div>
       <header style={{ textAlign: "center", margin: "50px" }}>
         <h1 className="title">Art Collection</h1>
-        <button onClick={toggleShowForm} className="btn btn-light btn-sm">
-          {showForm ? "Hide New Artwork Form" : "Show New Artwork Form"}
-        </button>
+        {!loggedIn && (
+          <LoginForm
+            handleLogin={handleLogin}
+            handleRegister={handleRegister}
+          />
+        )}
+        {loggedIn && (
+          <button onClick={toggleShowForm} className="btn btn-light btn-sm">
+            {showForm ? "Hide New Artwork Form" : "Show New Artwork Form"}
+          </button>
+        )}
         {showForm && <NewEntryForm addNewArtwork={addNewArtwork} />}
       </header>
       {/* {data ? <pre>{JSON.stringify(data, null, 2)}</pre> : "Loading..."} */}
-      {data
-        ? data
-            .sort((a, b) => a._id - b._id)
-            .map((artwork) => (
-              <ArtworkTile
-                key={artwork._id}
-                artwork={artwork}
-                onDelete={onDelete}
-                editArtworkEntry={editArtworkEntry}
-              />
-            ))
-        : "Loading..."}
+      {/* {loggedIn &&
+        data
+          .sort((a, b) => a._id - b._id)
+          .map((artwork) => (
+            <ArtworkTile
+              key={artwork._id}
+              artwork={artwork}
+              onDelete={onDelete}
+              editArtworkEntry={editArtworkEntry}
+            />
+          ))} */}
     </div>
   );
 }
