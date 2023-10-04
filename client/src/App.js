@@ -6,11 +6,14 @@ import AuthForms from "./components/AuthForms";
 import "bootstrap";
 import "./app.css";
 import Cookies from "universal-cookie";
+import { Route, Routes } from "react-router-dom";
+import { Login, Register, Home } from "./pages";
 
 function App() {
   const [showForm, setShowForm] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
-  const [user, setUser] = useState("");
+  const [userName, setUserName] = useState("");
+  const [data, setData] = useState([]);
 
   const cookies = new Cookies(null, { path: "/" });
 
@@ -18,7 +21,6 @@ function App() {
     setShowForm(!showForm);
   };
 
-  const [data, setData] = useState(null);
   //   {
   //     id: 0,
   //     artist: "Gustav Klimt",
@@ -92,10 +94,11 @@ function App() {
       formData.append(key, artwork[key]);
     }
 
-    fetch("http://localhost:8080/artwork/", {
+    fetch(`http://localhost:8080/artwork/${userName}`, {
       method: "POST",
       header: {
         "Content-Type": "multipart/form-data",
+        Authentication: cookies.get("authToken"),
       },
       body: formData,
     })
@@ -146,7 +149,7 @@ function App() {
 
         cookies.set("authToken", res.token, { path: "/" });
         setLoggedIn(true);
-        setUser(res.name);
+        setUserName(res.name);
         console.log("fetching artwork...");
         fetchArtwork();
       })
@@ -163,15 +166,14 @@ function App() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authentication: cookies.get("authToken"),
       },
       body: JSON.stringify({ name: name, email: email, password: password }),
     });
   };
 
-  const fetchArtwork = () => {
+  const fetchArtwork = (userName) => {
     console.log("cookie", cookies.get("authToken"));
-    fetch("http://localhost:8080/artwork/", {
+    fetch(`http://localhost:8080/artwork/${userName}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${cookies.get("authToken")}`,
@@ -179,8 +181,9 @@ function App() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
-        setData(data);
+        console.log("data: ", data);
+        if (data.length === 0) setShowForm(true);
+        else setData(data);
       })
       .catch((error) => console.error(error));
   };
@@ -188,7 +191,8 @@ function App() {
   const handleLogout = () => {
     cookies.remove("authToken");
     setLoggedIn(false);
-    setUser("");
+    setUserName("");
+    setShowForm(false);
   };
 
   // useEffect(() => {
@@ -205,45 +209,62 @@ function App() {
 
   return (
     <div>
-      <header style={{ textAlign: "center", margin: "50px" }}>
-        {loggedIn && (
-          <button
-            onClick={handleLogout}
-            className="logout-button btn btn-dark btn-sm"
-          >
-            Log Out
-          </button>
-        )}
-        <h1 className="title">{user && `${user}'s `}Art Collection</h1>
-        {!loggedIn && (
-          <AuthForms
-            handleLogin={handleLogin}
-            handleRegister={handleRegister}
-          />
-        )}
-        {loggedIn && (
-          <button onClick={toggleShowForm} className="btn btn-light btn-sm">
-            {showForm ? "Hide New Artwork Form" : "Show New Artwork Form"}
-          </button>
-        )}
-        {showForm && <NewEntryForm addNewArtwork={addNewArtwork} />}
-      </header>
-      {/* {data ? <pre>{JSON.stringify(data, null, 2)}</pre> : "Loading..."} */}
-      {loggedIn &&
-        (data
-          ? data
-              .sort((a, b) => a._id - b._id)
-              .map((artwork) => (
-                <ArtworkTile
-                  key={artwork._id}
-                  artwork={artwork}
-                  onDelete={onDelete}
-                  editArtworkEntry={editArtworkEntry}
-                />
-              ))
-          : "Loading...")}
+      <h1 className="title">Art Collection</h1>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+      </Routes>
     </div>
   );
+
+  // return (
+  //   <div>
+  //     <header style={{ textAlign: "center", margin: "50px" }}>
+  //       {loggedIn && (
+  //         <button
+  //           onClick={handleLogout}
+  //           className="logout-button btn btn-dark btn-sm"
+  //         >
+  //           Log Out
+  //         </button>
+  //       )}
+  //       <h1 className="title">{userName && `${userName}'s `}Art Collection</h1>
+  //       {!loggedIn && (
+  //         <p>
+  //           Art Collection is a web application to store information about your
+  //           collection of art. <br />
+  //           Make an account below and login to get started!
+  //         </p>
+  //       )}
+  //       {!loggedIn && (
+  //         <AuthForms
+  //           handleLogin={handleLogin}
+  //           handleRegister={handleRegister}
+  //         />
+  //       )}
+  //       {loggedIn && (
+  //         <button onClick={toggleShowForm} className="btn btn-light btn-sm">
+  //           {showForm ? "Hide New Artwork Form" : "Show New Artwork Form"}
+  //         </button>
+  //       )}
+  //       {showForm && <NewEntryForm addNewArtwork={addNewArtwork} />}
+  //     </header>
+  //     {/* {data ? <pre>{JSON.stringify(data, null, 2)}</pre> : "Loading..."} */}
+  //     {loggedIn &&
+  //       data &&
+  //       data
+  //         .sort((a, b) => a._id - b._id)
+  //         .map((artwork) => (
+  //           <ArtworkTile
+  //             key={artwork._id}
+  //             artwork={artwork}
+  //             onDelete={onDelete}
+  //             editArtworkEntry={editArtworkEntry}
+  //           />
+  //         ))}
+  //   </div>
+  // );
 }
 
 export default App;

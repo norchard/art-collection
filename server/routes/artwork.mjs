@@ -30,11 +30,11 @@ const upload = multer({
 const uploadImage = upload.single("image");
 
 // Get a list of 50 posts
-router.get("/", async (req, res) => {
-  console.log(req.user);
-  // const query = { user: req.user };
+router.get("/:user", async (req, res) => {
+  console.log("user: ", req.params.user);
+  const query = { user: req.params.user };
   let collection = await db.collection("artwork");
-  let results = await collection.find({}).toArray();
+  let results = await collection.find({ query }).toArray();
 
   res.send(results).status(200);
 });
@@ -54,10 +54,10 @@ router.get("/", async (req, res) => {
 // });
 
 // Add a new document to the collection
-router.post("/", upload.single("image"), async (req, res) => {
+router.post("/:user", upload.single("image"), async (req, res) => {
   const imageKey = req.file.key;
   let collection = await db.collection("artwork");
-  let newDocument = { ...req.body, image: imageKey, user: req.user };
+  let newDocument = { ...req.body, image: imageKey, user: req.params.user };
 
   let result = await collection.insertOne(newDocument);
   res.send(result.insertedId).status(204);

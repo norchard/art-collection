@@ -15,7 +15,7 @@ router.post("/register", (req, res) => {
     .hash(req.body.password, 10)
     .then((hashedPassword) => {
       const user = new User({
-        name: req.body.name,
+        username: req.body.username,
         email: req.body.email,
         password: hashedPassword,
       });
@@ -64,7 +64,7 @@ router.post("/login", (request, response) => {
           // check if password matches
           if (!passwordCheck) {
             return response.status(400).send({
-              message: "Passwords does not match",
+              message: "Passwords do not match",
               error,
             });
           }

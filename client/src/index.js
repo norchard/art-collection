@@ -1,7 +1,7 @@
 import React from "react";
 // import ReactDOM from "react-dom";
 import App from "./App";
-// import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.css";
 
 // ReactDOM.render(
@@ -23,4 +23,8 @@ import "bootstrap/dist/css/bootstrap.css";
 import { createRoot } from "react-dom/client";
 const container = document.getElementById("root");
 const root = createRoot(container); // createRoot(container!) if you use TypeScript
-root.render(<App tab="home" />);
+root.render(
+  <BrowserRouter>
+    <App tab="home" />
+  </BrowserRouter>
+);
