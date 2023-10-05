@@ -124,7 +124,7 @@ const Login = () => {
           Submit
         </button>
         <span>
-          Already have an account? <Link to={"/register"}>Register</Link>
+          Need to create an account? <Link to={"/register"}>Register</Link>
         </span>
       </form>
       <ToastContainer style />

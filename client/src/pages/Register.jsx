@@ -47,7 +47,13 @@ const Register = () => {
       .then((res) => res.json())
       .then((res) => {
         if (res.error) throw new Error(res.message);
-        else handleSuccess(res.message);
+        else {
+          handleSuccess(res.message);
+          setTimeout(() => {
+            console.log("navigating");
+            navigate("/login");
+          }, 1000);
+        }
       })
       .catch((err) => handleError(err.message));
   };

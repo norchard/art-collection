@@ -32,10 +32,9 @@ const uploadImage = upload.single("image");
 // Get a list of 50 posts
 router.get("/:user", async (req, res) => {
   console.log("user: ", req.params.user);
-  const query = { user: req.params.user };
+  const query = { user: `${req.params.user}` };
   let collection = await db.collection("artwork");
-  let results = await collection.find({ query }).toArray();
-
+  let results = await collection.find(query).toArray();
   res.send(results).status(200);
 });
 
@@ -55,10 +54,11 @@ router.get("/:user", async (req, res) => {
 
 // Add a new document to the collection
 router.post("/:user", upload.single("image"), async (req, res) => {
+  console.log("got to here!");
   const imageKey = req.file.key;
   let collection = await db.collection("artwork");
   let newDocument = { ...req.body, image: imageKey, user: req.params.user };
-
+  console.log("new Doc: ", newDocument);
   let result = await collection.insertOne(newDocument);
   res.send(result.insertedId).status(204);
 });

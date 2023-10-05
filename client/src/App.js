@@ -96,7 +96,7 @@ function App() {
 
     fetch(`http://localhost:8080/artwork/${userName}`, {
       method: "POST",
-      header: {
+      headers: {
         "Content-Type": "multipart/form-data",
         Authentication: cookies.get("authToken"),
       },

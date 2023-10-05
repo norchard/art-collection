@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-// import { useCookies } from "react-cookie";
 import Cookies from "universal-cookie";
 import NewEntryForm from "../components/NewEntryForm";
 import { ToastContainer, toast } from "react-toastify";
@@ -9,8 +8,6 @@ import ArtworkTile from "../components/ArtworkTile";
 const Home = () => {
   const navigate = useNavigate();
   const cookies = new Cookies(null, { path: "/" });
-
-  // const [cookies, removeCookie] = useCookies([]);
   const [username, setUsername] = useState("");
   const [data, setData] = useState([]);
   const [showForm, setShowForm] = useState(false);
@@ -20,6 +17,7 @@ const Home = () => {
   };
 
   useEffect(() => {
+    console.log("useEffect");
     const verifyCookie = async () => {
       if (!cookies.get("token")) {
         navigate("/login");
@@ -34,31 +32,52 @@ const Home = () => {
         .then((data) => {
           const { status, user } = data;
           setUsername(user);
+          if (!status) {
+            cookies.remove("token");
+            navigate("/login");
+          }
           // return status
           //   ? toast(`Hello ${user}`, { position: "top-right" })
           //   : (cookies.remove("token"), navigate("/login"));
         });
     };
     verifyCookie();
+  }, [cookies, navigate]);
 
-    const fetchArtwork = (user) => {
-      // console.log("cookie", cookies.get("authToken"));
-      fetch(`http://localhost:8080/artwork/${user}`, {
-        method: "GET",
-        headers: {
-          Authorization: cookies.get("token"),
-        },
+  useEffect(() => {
+    fetch(`http://localhost:8080/artwork/${username}`, {
+      method: "GET",
+      headers: {
+        Authorization: cookies.get("token"),
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        if (data.length === 0) setShowForm(true);
+        else setData(data);
       })
-        .then((res) => res.json())
-        .then((data) => {
-          console.log("data: ", data);
-          // if (data.length === 0) setShowForm(true);
-          // else setData(data);
-        })
-        .catch((error) => console.error(error));
-    };
-    fetchArtwork(username);
+      .catch((error) => console.error(error));
   });
+
+  // useEffect(() => {
+  //   const fetchArtwork = async (user) => {
+  //     fetch(`http://localhost:8080/artwork/${user}`, {
+  //       method: "GET",
+  //       headers: {
+  //         Authorization: cookies.get("token"),
+  //       },
+  //     })
+  //       .then((res) => res.json())
+  //       .then((data) => {
+  //         console.log("data: ", data);
+  //         if (data.length === 0) setShowForm(true);
+  //         else setData(data);
+  //       })
+  //       .catch((error) => console.error(error));
+  //   };
+  //   fetchArtwork(username);
+  // }, [username, cookies]);
 
   // const editArtworkEntry = (artwork) => {
   //   const { _id, ...restOfArtwork } = artwork;
@@ -109,10 +128,9 @@ const Home = () => {
     for (let key in artwork) {
       formData.append(key, artwork[key]);
     }
-
     fetch(`http://localhost:8080/artwork/${username}`, {
       method: "POST",
-      header: {
+      headers: {
         "Content-Type": "multipart/form-data",
         Authorization: cookies.get("token"),
       },
