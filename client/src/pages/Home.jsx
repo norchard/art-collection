@@ -17,7 +17,6 @@ const Home = () => {
   };
 
   useEffect(() => {
-    console.log("useEffect");
     const verifyCookie = async () => {
       if (!cookies.get("token")) {
         navigate("/login");
@@ -42,9 +41,10 @@ const Home = () => {
         });
     };
     verifyCookie();
-  }, [cookies, navigate]);
+  }, []);
 
   useEffect(() => {
+    if (!username) return;
     fetch(`http://localhost:8080/artwork/${username}`, {
       method: "GET",
       headers: {
@@ -52,32 +52,12 @@ const Home = () => {
       },
     })
       .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        if (data.length === 0) setShowForm(true);
-        else setData(data);
+      .then((res) => {
+        if (res.length > 0) setData(res);
+        else setShowForm(true);
       })
       .catch((error) => console.error(error));
-  });
-
-  // useEffect(() => {
-  //   const fetchArtwork = async (user) => {
-  //     fetch(`http://localhost:8080/artwork/${user}`, {
-  //       method: "GET",
-  //       headers: {
-  //         Authorization: cookies.get("token"),
-  //       },
-  //     })
-  //       .then((res) => res.json())
-  //       .then((data) => {
-  //         console.log("data: ", data);
-  //         if (data.length === 0) setShowForm(true);
-  //         else setData(data);
-  //       })
-  //       .catch((error) => console.error(error));
-  //   };
-  //   fetchArtwork(username);
-  // }, [username, cookies]);
+  }, [username]);
 
   // const editArtworkEntry = (artwork) => {
   //   const { _id, ...restOfArtwork } = artwork;
@@ -142,7 +122,8 @@ const Home = () => {
         const newData = [...data, newArtwork];
         setData(newData);
         toggleShowForm();
-      });
+      })
+      .catch((err) => console.log(err));
   };
 
   const onDelete = (id) => {
@@ -189,7 +170,6 @@ const Home = () => {
     <>
       <div className="home_page">
         <h4>
-          {" "}
           Welcome <span>{username}</span>
         </h4>
         <button className="logout-button btn btn-sm btn-dark" onClick={Logout}>
@@ -200,11 +180,6 @@ const Home = () => {
           {showForm ? "Hide New Artwork Form" : "Show New Artwork Form"}
         </button>
         {showForm && <NewEntryForm addNewArtwork={addNewArtwork} />}
-        {/* {data.length > 0 ? (
-        <pre>{JSON.stringify(data, null, 2)}</pre>
-      ) : (
-        "Loading..."
-      )} */}
         {data
           .sort((a, b) => a._id - b._id)
           .map((artwork) => (

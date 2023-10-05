@@ -63,7 +63,7 @@ router.post("/:user", upload.single("image"), async (req, res) => {
   res.send(result.insertedId).status(204);
 });
 
-// // Update an artwork entry
+// Update an artwork entry
 router.put("/:id", async (req, res) => {
   const query = { _id: new ObjectId(req.params.id) };
   const updates = { $set: req.body };

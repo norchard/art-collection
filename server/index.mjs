@@ -4,7 +4,7 @@ import "./loadEnvironment.mjs";
 // import "express-async-errors";
 import artworkRoutes from "./routes/artwork.mjs";
 import authRoutes from "./routes/auth.mjs";
-import auth from "./auth.mjs";
+import auth from "./middleware/auth.mjs";
 import User from "./db/userModel.mjs";
 import jwt from "jsonwebtoken";
 

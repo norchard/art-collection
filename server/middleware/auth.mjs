@@ -4,7 +4,6 @@ export default async (req, res, next) => {
   try {
     //   get the token from the authorization header
     const token = await req.headers.authorization;
-
     //check if the token matches the supposed origin
     const decodedToken = await jwt.verify(token, process.env.TOKEN_KEY);
     // retrieve the user details of the logged in user
@@ -14,6 +13,7 @@ export default async (req, res, next) => {
     // pass down functionality to the endpoint
     next();
   } catch (error) {
+    console.log("this error");
     res.status(401).json({
       error: new Error("Invalid request!"),
     });
