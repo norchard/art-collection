@@ -61,6 +61,7 @@ const Register = () => {
             type="email"
             name="email"
             value={email}
+            className="form-control"
             placeholder="Enter your email"
             onChange={handleOnChange}
           />
@@ -71,6 +72,7 @@ const Register = () => {
             type="text"
             name="username"
             value={username}
+            className="form-control"
             placeholder="Enter your username"
             onChange={handleOnChange}
           />
@@ -81,11 +83,14 @@ const Register = () => {
             type="password"
             name="password"
             value={password}
+            className="form-control"
             placeholder="Enter your password"
             onChange={handleOnChange}
           />
         </div>
-        <button type="submit">Submit</button>
+        <button className="form-control btn btn-success" type="submit">
+          Submit
+        </button>
         <span>
           Already have an account? <Link to={"/login"}>Login</Link>
         </span>

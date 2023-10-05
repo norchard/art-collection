@@ -104,6 +104,7 @@ const Login = () => {
             type="email"
             name="email"
             value={email}
+            className="form-control"
             placeholder="Enter your email"
             onChange={handleOnChange}
           />
@@ -114,11 +115,14 @@ const Login = () => {
             type="password"
             name="password"
             value={password}
+            className="form-control"
             placeholder="Enter your password"
             onChange={handleOnChange}
           />
         </div>
-        <button type="submit">Submit</button>
+        <button className="form-control btn btn-success" type="submit">
+          Submit
+        </button>
         <span>
           Already have an account? <Link to={"/register"}>Register</Link>
         </span>

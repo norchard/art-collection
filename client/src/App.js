@@ -208,7 +208,7 @@ function App() {
   // }, []);
 
   return (
-    <div>
+    <div id="App">
       <h1 className="title">Art Collection</h1>
       <Routes>
         <Route path="/" element={<Home />} />
