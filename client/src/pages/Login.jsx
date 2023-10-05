@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Cookies from "universal-cookie";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -10,6 +11,8 @@ const Login = () => {
     password: "",
   });
   const { email, password } = inputValue;
+  const cookies = new Cookies(null, { path: "/" });
+
   const handleOnChange = (e) => {
     const { name, value } = e.target;
     setInputValue({
@@ -50,8 +53,10 @@ const Login = () => {
         console.log(res);
         if (res.error) throw new Error(res.message);
         else {
+          cookies.set("token", res.token, { path: "/" });
           handleSuccess(res.message);
           setTimeout(() => {
+            console.log("navigating");
             navigate("/");
           }, 1000);
         }

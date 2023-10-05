@@ -75,7 +75,7 @@ router.post("/login", (request, response) => {
               userId: user._id,
               userEmail: user.email,
             },
-            "RANDOM-TOKEN",
+            process.env.TOKEN_KEY,
             { expiresIn: "24h" }
           );
 
