@@ -18,10 +18,13 @@ const Login = () => {
     });
   };
 
-  const handleError = (err) =>
+  const handleError = (err) => {
+    console.log("about to toast");
     toast.error(err, {
       position: "bottom-left",
     });
+  };
+
   const handleSuccess = (msg) =>
     toast.success(msg, {
       position: "bottom-left",
@@ -29,6 +32,12 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!inputValue.email || !inputValue.password) {
+      alert("Please fill in all fields.");
+      return;
+    }
+
     fetch("http://localhost:8080/login", {
       method: "POST",
       headers: {
@@ -36,21 +45,21 @@ const Login = () => {
       },
       body: JSON.stringify({ email: email, password: password }),
     })
-      .then((res) => {
-        console.log("res.ok", res);
-        if (res.ok) {
-          return res.json();
-        }
-        throw new Error("error!");
-      })
+      .then((res) => res.json())
       .then((res) => {
         console.log(res);
-        handleSuccess(res.message);
-        setTimeout(() => {
-          navigate("/");
-        }, 1000);
+        if (res.error) throw new Error(res.message);
+        else {
+          handleSuccess(res.message);
+          setTimeout(() => {
+            navigate("/");
+          }, 1000);
+        }
       })
-      .catch((err) => handleError(err));
+      .catch((err) => {
+        console.log("caught it: ", err);
+        handleError(err.message);
+      });
 
     // try {
     //   const { data } = await axios.post(
@@ -82,7 +91,7 @@ const Login = () => {
 
   return (
     <div className="form_container">
-      <h2>Login Account</h2>
+      <h2>Login</h2>
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="email">Email</label>

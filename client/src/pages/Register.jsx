@@ -31,6 +31,12 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!inputValue.username || !inputValue.email || !inputValue.password) {
+      alert("Please fill in all fields.");
+      return;
+    }
+
     fetch("http://localhost:8080/register", {
       method: "POST",
       headers: {
@@ -40,13 +46,14 @@ const Register = () => {
     })
       .then((res) => res.json())
       .then((res) => {
-        handleSuccess(res.message);
+        if (res.error) throw new Error(res.message);
+        else handleSuccess(res.message);
       })
-      .catch((err) => handleError(err));
+      .catch((err) => handleError(err.message));
   };
   return (
     <div className="form_container">
-      <h2>Register Account</h2>
+      <h2>Register</h2>
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="email">Email</label>
