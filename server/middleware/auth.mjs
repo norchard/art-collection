@@ -8,12 +8,13 @@ export default async (req, res, next) => {
     const decodedToken = await jwt.verify(token, process.env.TOKEN_KEY);
     // retrieve the user details of the logged in user
     const user = await decodedToken;
+    console.log(decodedToken);
     // pass the user down to the endpoints here
     req.user = user;
     // pass down functionality to the endpoint
     next();
+    console.log("e");
   } catch (error) {
-    console.log("this error");
     res.status(401).json({
       error: new Error("Invalid request!"),
     });

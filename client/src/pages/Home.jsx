@@ -44,8 +44,7 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    if (!username) return;
-    fetch(`http://localhost:8080/artwork/${username}`, {
+    fetch(`http://localhost:8080/artwork/`, {
       method: "GET",
       headers: {
         Authorization: cookies.get("token"),
@@ -108,7 +107,8 @@ const Home = () => {
     for (let key in artwork) {
       formData.append(key, artwork[key]);
     }
-    fetch(`http://localhost:8080/artwork/${username}`, {
+
+    fetch(`http://localhost:8080/artwork/`, {
       method: "POST",
       headers: {
         "Content-Type": "multipart/form-data",
@@ -117,13 +117,19 @@ const Home = () => {
       body: formData,
     })
       .then((res) => res.json())
-      .then((id) => {
-        const newArtwork = { _id: id, ...artwork };
-        const newData = [...data, newArtwork];
-        setData(newData);
-        toggleShowForm();
+      .then((res) => {
+        if (res.error) throw new Error(res.message);
+        console.log(res);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.error(err));
+    // .then((res) => res.json())
+    // .then((id) => {
+    //   const newArtwork = { _id: id, ...artwork };
+    //   const newData = [...data, newArtwork];
+    //   setData(newData);
+    //   toggleShowForm();
+    // })
+    // .catch((err) => console.log(err));
   };
 
   const onDelete = (id) => {
@@ -169,7 +175,7 @@ const Home = () => {
   return (
     <>
       <div className="home_page">
-        <h4>
+        <h4 class="light-text">
           Welcome <span>{username}</span>
         </h4>
         <button className="logout-button btn btn-sm btn-dark" onClick={Logout}>
@@ -180,16 +186,18 @@ const Home = () => {
           {showForm ? "Hide New Artwork Form" : "Show New Artwork Form"}
         </button>
         {showForm && <NewEntryForm addNewArtwork={addNewArtwork} />}
-        {data
-          .sort((a, b) => a._id - b._id)
-          .map((artwork) => (
-            <ArtworkTile
-              key={artwork._id}
-              artwork={artwork}
-              onDelete={onDelete}
-              editArtworkEntry={editArtworkEntry}
-            />
-          ))}
+        <div id="artwork-container">
+          {data
+            .sort((a, b) => a._id - b._id)
+            .map((artwork) => (
+              <ArtworkTile
+                key={artwork._id}
+                artwork={artwork}
+                onDelete={onDelete}
+                editArtworkEntry={editArtworkEntry}
+              />
+            ))}
+        </div>
       </div>
       <ToastContainer />
     </>

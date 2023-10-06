@@ -45,7 +45,10 @@ app.use("/artwork", auth, artworkRoutes);
 
 // Global error handling
 app.use((err, _req, res, next) => {
-  res.status(500).send("Uh oh! An unexpected error occured.");
+  res.status(500).send({
+    message: "Uh oh! An unexpected error occured.",
+    error: {},
+  });
 });
 
 // start the express server
