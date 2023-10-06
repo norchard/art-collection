@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 export default async (req, res, next) => {
   try {
     //   get the token from the authorization header
-    const token = await req.headers.authorization.split(" ")[1];
+    const token = await req.headers.authorization;
     //check if the token matches the supposed origin
     const decodedToken = await jwt.verify(token, process.env.TOKEN_KEY);
     // retrieve the user details of the logged in user

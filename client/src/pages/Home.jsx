@@ -24,7 +24,7 @@ const Home = () => {
       fetch("http://localhost:8080", {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${cookies.get("token")}`,
+          Authorization: cookies.get("token"),
         },
       })
         .then((res) => res.json())
@@ -47,7 +47,7 @@ const Home = () => {
     fetch(`http://localhost:8080/artwork/`, {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${cookies.get("token")}`,
+        Authorization: cookies.get("token"),
       },
     })
       .then((res) => res.json())
@@ -78,7 +78,7 @@ const Home = () => {
       method: "POST",
       headers: {
         "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${cookies.get("token")}`,
+        Authorization: cookies.get("token"),
       },
       body: formData,
     })
@@ -102,7 +102,7 @@ const Home = () => {
     fetch(`http://localhost:8080/artwork/${id}`, {
       method: "DELETE",
       headers: {
-        Authorization: `Bearer ${cookies.get("token")}`,
+        Authorization: cookies.get("token"),
       },
     })
       .then((res) => res.json())
@@ -121,7 +121,7 @@ const Home = () => {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${cookies.get("token")}`,
+        Authorization: cookies.get("token"),
       },
       body: JSON.stringify(restOfArtwork),
     })
