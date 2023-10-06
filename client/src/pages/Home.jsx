@@ -24,7 +24,7 @@ const Home = () => {
       fetch("http://localhost:8080", {
         method: "POST",
         headers: {
-          Authorization: cookies.get("token"),
+          Authorization: `Bearer ${cookies.get("token")}`,
         },
       })
         .then((res) => res.json())
@@ -47,7 +47,7 @@ const Home = () => {
     fetch(`http://localhost:8080/artwork/`, {
       method: "GET",
       headers: {
-        Authorization: cookies.get("token"),
+        Authorization: `Bearer ${cookies.get("token")}`,
       },
     })
       .then((res) => res.json())
@@ -58,48 +58,13 @@ const Home = () => {
       .catch((error) => console.error(error));
   }, [username]);
 
-  // const editArtworkEntry = (artwork) => {
-  //   const { _id, ...restOfArtwork } = artwork;
-  //   fetch(`http://localhost:8080/artwork/${_id}`, {
-  //     method: "PUT",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify(restOfArtwork),
-  //   })
-  //     .then((res) => res.json())
-  //     .then((res) => {
-  //       if (res.modifiedCount === 1) {
-  //         const removeArtwork = data.filter((item) => item._id !== artwork._id);
-  //         const newData = [...removeArtwork, artwork].sort(
-  //           (a, b) => a._id - b._id
-  //         );
-  //         setData(newData);
-  //       }
-  //     })
-  //     .catch((error) => console.error(error));
-  // };
-
-  // const onDelete = (id) => {
-  //   fetch(`http://localhost:8080/artwork/${id}`, {
-  //     method: "DELETE",
-  //   })
-  //     .then((res) => res.json())
-  //     .then((res) => {
-  //       if (res.deletedCount === 1) {
-  //         const newData = data.filter((artwork) => artwork._id !== id);
-  //         setData(newData);
-  //       }
-  //     })
-  //     .catch((error) => console.error(error));
-  // };
-
   const Logout = () => {
     cookies.remove("token");
     navigate("/login");
   };
 
   const addNewArtwork = (artwork) => {
+    console.log("adding new artwork");
     // Create an object of formData
     let formData = new FormData();
 
@@ -107,12 +72,13 @@ const Home = () => {
     for (let key in artwork) {
       formData.append(key, artwork[key]);
     }
+    console.log(artwork);
 
-    fetch(`http://localhost:8080/artwork/`, {
+    fetch("http://localhost:8080/artwork/image", {
       method: "POST",
       headers: {
         "Content-Type": "multipart/form-data",
-        Authorization: cookies.get("token"),
+        Authorization: `Bearer ${cookies.get("token")}`,
       },
       body: formData,
     })
@@ -136,7 +102,7 @@ const Home = () => {
     fetch(`http://localhost:8080/artwork/${id}`, {
       method: "DELETE",
       headers: {
-        Authorization: cookies.get("token"),
+        Authorization: `Bearer ${cookies.get("token")}`,
       },
     })
       .then((res) => res.json())
@@ -155,7 +121,7 @@ const Home = () => {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Authorization: cookies.get("token"),
+        Authorization: `Bearer ${cookies.get("token")}`,
       },
       body: JSON.stringify(restOfArtwork),
     })
@@ -175,7 +141,7 @@ const Home = () => {
   return (
     <>
       <div className="home_page">
-        <h4 class="light-text">
+        <h4 className="light-text">
           Welcome <span>{username}</span>
         </h4>
         <button className="logout-button btn btn-sm btn-dark" onClick={Logout}>

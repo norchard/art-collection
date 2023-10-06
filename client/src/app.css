@@ -187,6 +187,7 @@ span a {
 
 .artwork-container {
   display: block;
+  margin: 0 auto;
 }
 
 .light-text {

@@ -1,9 +1,8 @@
-import User from "../db/userModel";
+import User from "../db/userModel.mjs";
 import jwt from "jsonwebtoken";
 
-export default userVerification = (req, res) => {
-  console.log("req: ", req);
-  const token = req.cookies.token;
+const userVerification = (req, res) => {
+  const token = req.headers.authorization;
   if (!token) {
     return res.json({ status: false });
   }
@@ -11,9 +10,11 @@ export default userVerification = (req, res) => {
     if (err) {
       return res.json({ status: false });
     } else {
-      const user = await User.findById(data.id);
+      const user = await User.findById(data.userId);
       if (user) return res.json({ status: true, user: user.username });
       else return res.json({ status: false });
     }
   });
 };
+
+export default userVerification;

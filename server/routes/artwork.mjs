@@ -21,13 +21,12 @@ const upload = multer({
     bucket: S3_BUCKET,
     acl: "public-read",
     contentType: multerS3.AUTO_CONTENT_TYPE,
-    key: function (req, file, cb) {
+    key: (req, file, cb) => {
       cb(null, `${Date.now().toString()}-${file.originalname}`);
     },
   }),
 });
-
-const uploadImage = upload.single("image");
+// const upload = multer({ dest: "uploads/" });
 
 // Get a list of 50 posts
 router.get("/", async (req, res) => {
@@ -48,14 +47,14 @@ router.get("/", async (req, res) => {
 //   else res.send(result).status(200);
 // });
 
-// router.post("/image", upload.single("image"), async (req, res) => {
-//   res.send(`s3://art--collection/${req.file.key}`);
-// });
+router.post("/image", upload.single("image"), async (req, res) => {
+  res.send(`s3://art--collection/${req.file.key}`);
+});
 
 // Add a new document to the collection
 router.post("/", upload.single("image"), async (req, res) => {
   console.log("post artwork/:user");
-  console.log(req.user);
+  console.log(req.body);
   const imageKey = req.file.key;
   let collection = await db.collection("artwork");
   let newDocument = { ...req.body, image: imageKey, user: req.user.userId };
