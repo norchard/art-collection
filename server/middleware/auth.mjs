@@ -11,9 +11,7 @@ export default async (req, res, next) => {
     // pass the user down to the endpoints here
     req.user = user;
     // pass down functionality to the endpoint
-    console.log("a");
     next();
-    console.log("b");
   } catch (error) {
     res.status(401).json({
       error: new Error("Invalid request!"),

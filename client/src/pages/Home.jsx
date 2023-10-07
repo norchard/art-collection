@@ -70,32 +70,30 @@ const Home = () => {
 
     // Update the formData object
     for (let key in artwork) {
+      console.log(key, artwork[key]);
       formData.append(key, artwork[key]);
     }
     console.log(artwork);
 
-    fetch("http://localhost:8080/artwork/image", {
+    fetch("http://localhost:8080/artwork/", {
       method: "POST",
       headers: {
-        "Content-Type": "multipart/form-data",
+        // "Content-Type": "multipart/form-data",
         Authorization: cookies.get("token"),
       },
       body: formData,
     })
       .then((res) => res.json())
-      .then((res) => {
-        if (res.error) throw new Error(res.message);
-        console.log(res);
+      .then((id) => {
+        console.log(id);
+        const newArtwork = { _id: id, ...artwork };
+        const newData = [...data, newArtwork];
+        setData(newData);
+        toggleShowForm();
       })
-      .catch((err) => console.error(err));
-    // .then((res) => res.json())
-    // .then((id) => {
-    //   const newArtwork = { _id: id, ...artwork };
-    //   const newData = [...data, newArtwork];
-    //   setData(newData);
-    //   toggleShowForm();
-    // })
-    // .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const onDelete = (id) => {
@@ -152,6 +150,8 @@ const Home = () => {
           {showForm ? "Hide New Artwork Form" : "Show New Artwork Form"}
         </button>
         {showForm && <NewEntryForm addNewArtwork={addNewArtwork} />}
+        {data ? <pre>{JSON.stringify(data, null, 2)}</pre> : "Loading..."}
+
         <div id="artwork-container">
           {data
             .sort((a, b) => a._id - b._id)

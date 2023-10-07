@@ -21,16 +21,18 @@ const upload = multer({
     bucket: S3_BUCKET,
     acl: "public-read",
     contentType: multerS3.AUTO_CONTENT_TYPE,
+    metadata: function (req, file, cb) {
+      cb(null, Object.assign({}, req.body));
+    },
     key: (req, file, cb) => {
       cb(null, `${Date.now().toString()}-${file.originalname}`);
     },
   }),
-});
+}).single("image");
 // const upload = multer({ dest: "uploads/" });
 
-// Get a list of 50 posts
+// Get a list of artwork
 router.get("/", async (req, res) => {
-  console.log("get /artwork/:user");
   const query = { user: `${req.user.userId}` };
   let collection = await db.collection("artwork");
   let results = await collection.find(query).toArray();
@@ -47,21 +49,48 @@ router.get("/", async (req, res) => {
 //   else res.send(result).status(200);
 // });
 
-router.post("/image", upload.single("image"), async (req, res) => {
-  res.send(`s3://art--collection/${req.file.key}`);
-});
+// router.post("/image", upload.single("image"), async (req, res) => {
+//   res.send(`s3://art--collection/${req.file.key}`);
+// });
+
+// const uploadToS3 = (req, res, next) => {
+//   upload.single("file")(req, res, function (err) {
+//     if (err instanceof multer.MulterError) {
+//       // A Multer error occurred when uploading.
+//       res.status(500).send({ message: err.message });
+//     } else if (err) {
+//       // An unknown error occurred when uploading.
+//       res.status(500).send({ message: err.message });
+//     }
+//     // Everything went fine.
+//     next();
+//   });
+// };
 
 // Add a new document to the collection
-router.post("/", upload.single("image"), async (req, res) => {
-  console.log("post artwork/:user");
-  console.log(req.body);
-  const imageKey = req.file.key;
-  let collection = await db.collection("artwork");
-  let newDocument = { ...req.body, image: imageKey, user: req.user.userId };
-  console.log("new Doc: ", newDocument);
-  let result = await collection.insertOne(newDocument);
-  res.send(result.insertedId).status(204);
-});
+router.post(
+  "/",
+  async (req, res, next) => {
+    upload(req, res, function (err) {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      console.log("all good with multer");
+      next();
+    });
+  },
+  async (req, res) => {
+    console.log("post artwork");
+    console.log(req.file);
+    const imageKey = req.file.key;
+    let collection = await db.collection("artwork");
+    let newDocument = { ...req.body, image: imageKey, user: req.user.userId };
+    console.log("new Doc: ", newDocument);
+    let result = await collection.insertOne(newDocument);
+    res.send(result.insertedId).status(204);
+  }
+);
 
 // Update an artwork entry
 router.put("/:id", async (req, res) => {

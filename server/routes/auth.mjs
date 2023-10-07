@@ -20,8 +20,6 @@ router.post("/register", (req, res) => {
         password: hashedPassword,
       });
 
-      console.log(user);
-
       // save the new user
       user
         .save()

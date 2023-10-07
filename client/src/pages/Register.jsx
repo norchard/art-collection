@@ -73,7 +73,7 @@ const Register = () => {
           />
         </div>
         <div>
-          <label htmlFor="email">Username</label>
+          <label htmlFor="username">Username</label>
           <input
             type="text"
             name="username"

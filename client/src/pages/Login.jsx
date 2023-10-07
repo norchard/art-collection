@@ -22,7 +22,7 @@ const Login = () => {
   };
 
   const handleError = (err) => {
-    console.log("about to toast");
+    console.log("about to error toast");
     toast.error(err, {
       position: "bottom-left",
     });
