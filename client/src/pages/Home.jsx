@@ -80,10 +80,12 @@ const Home = () => {
       body: formData,
     })
       .then((res) => res.json())
-      .then((id) => {
-        const newArtwork = { _id: id, ...artwork };
+      .then((res) => {
+        const { id, imageKey } = res;
+        const newArtwork = { _id: id, ...artwork, image: imageKey };
         const newData = [...data, newArtwork];
         setData(newData);
+
         toggleShowForm();
       })
       .catch((err) => {

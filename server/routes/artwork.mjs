@@ -84,7 +84,7 @@ router.post(
     let collection = await db.collection("artwork");
     let newDocument = { ...req.body, image: imageKey, user: req.user.userId };
     let result = await collection.insertOne(newDocument);
-    res.send(result.insertedId).status(204);
+    res.send({ id: result.insertedId, imageKey: imageKey }).status(204);
   }
 );
 

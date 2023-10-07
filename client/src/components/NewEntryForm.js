@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const NewEntryForm = (params) => {
   const [name, setName] = useState("");
