@@ -76,17 +76,13 @@ router.post(
         console.log(err);
         return;
       }
-      console.log("all good with multer");
       next();
     });
   },
   async (req, res) => {
-    console.log("post artwork");
-    console.log(req.file);
     const imageKey = req.file.key;
     let collection = await db.collection("artwork");
     let newDocument = { ...req.body, image: imageKey, user: req.user.userId };
-    console.log("new Doc: ", newDocument);
     let result = await collection.insertOne(newDocument);
     res.send(result.insertedId).status(204);
   }
@@ -96,7 +92,6 @@ router.post(
 router.put("/:id", async (req, res) => {
   const query = { _id: new ObjectId(req.params.id) };
   const updates = { $set: req.body };
-  console.log(req.body);
 
   let collection = await db.collection("artwork");
   let result = await collection.updateOne(query, updates);
@@ -110,7 +105,6 @@ router.delete("/:id", async (req, res) => {
 
   const collection = db.collection("artwork");
   let entry = await collection.findOne(query);
-  console.log(entry);
   let result = await collection.deleteOne(query);
 
   s3.deleteObject(

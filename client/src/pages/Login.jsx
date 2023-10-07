@@ -22,7 +22,6 @@ const Login = () => {
   };
 
   const handleError = (err) => {
-    console.log("about to error toast");
     toast.error(err, {
       position: "bottom-left",
     });
@@ -50,19 +49,16 @@ const Login = () => {
     })
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
         if (res.error) throw new Error(res.message);
         else {
           cookies.set("token", res.token, { path: "/" });
           handleSuccess(res.message);
           setTimeout(() => {
-            console.log("navigating");
             navigate("/");
           }, 1000);
         }
       })
       .catch((err) => {
-        console.log("caught it: ", err);
         handleError(err.message);
       });
 

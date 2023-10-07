@@ -50,7 +50,6 @@ const Register = () => {
         else {
           handleSuccess(res.message);
           setTimeout(() => {
-            console.log("navigating");
             navigate("/login");
           }, 1000);
         }
