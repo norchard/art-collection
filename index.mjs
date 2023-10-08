@@ -34,5 +34,19 @@ app.use((err, _req, res, next) => {
   });
 });
 
+import path, { dirname } from "path";
+import { fileURLToPath } from "url";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+if (process.env.NODE_ENV === "production") {
+  //*Set static folder up in production
+  app.use(express.static("client/build"));
+
+  app.get("*", (req, res) =>
+    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"))
+  );
+}
+
 // start the express server
 app.listen(PORT, () => console.log(`it's alive on http://localhost:${PORT}`));

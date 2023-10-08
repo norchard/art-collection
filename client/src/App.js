@@ -209,7 +209,10 @@ function App() {
 
   return (
     <div id="App">
-      <h1 className="title">Art Collection</h1>
+      <div>
+        <img id="frames" alt="frames" src="art-collection.png" />
+        <h1 className="title">Art Collection</h1>
+      </div>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
