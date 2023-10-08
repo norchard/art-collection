@@ -34,15 +34,19 @@ app.use((err, _req, res, next) => {
   });
 });
 
-const path = require("path");
+import path, { dirname } from "path";
+import { fileURLToPath } from "url";
 
-// Serve static files from the React frontend app
-app.use(express.static(path.join(__dirname, "../client/build")));
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
-// AFTER defining routes: Anything that doesn't match what's above, send back index.html; (the beginning slash ('/') in the string is important!)
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname + "/../client/build/index.html"));
-});
+if (process.env.NODE_ENV === "production") {
+  //*Set static folder up in production
+  app.use(express.static("client/build"));
+
+  app.get("*", (req, res) =>
+    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"))
+  );
+}
 
 // start the express server
 app.listen(PORT, () => console.log(`it's alive on http://localhost:${PORT}`));
