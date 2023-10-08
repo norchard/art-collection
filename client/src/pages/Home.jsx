@@ -21,7 +21,7 @@ const Home = () => {
       if (!cookies.get("token")) {
         navigate("/login");
       }
-      fetch("http://localhost:8080", {
+      fetch("api", {
         method: "POST",
         headers: {
           Authorization: cookies.get("token"),
@@ -44,7 +44,7 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    fetch(`http://localhost:8080/artwork/`, {
+    fetch(`api/artwork`, {
       method: "GET",
       headers: {
         Authorization: cookies.get("token"),
@@ -72,7 +72,7 @@ const Home = () => {
       formData.append(key, artwork[key]);
     }
 
-    fetch("http://localhost:8080/artwork/", {
+    fetch("api/artwork", {
       method: "POST",
       headers: {
         Authorization: cookies.get("token"),
@@ -94,7 +94,7 @@ const Home = () => {
   };
 
   const onDelete = (id) => {
-    fetch(`http://localhost:8080/artwork/${id}`, {
+    fetch(`api/artwork/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: cookies.get("token"),
@@ -112,7 +112,7 @@ const Home = () => {
 
   const editArtworkEntry = (artwork) => {
     const { _id, ...restOfArtwork } = artwork;
-    fetch(`http://localhost:8080/artwork/${_id}`, {
+    fetch(`api/artwork/${_id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

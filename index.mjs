@@ -17,13 +17,13 @@ app.get("/", (req, res) => {
   res.status(200).send("Hello World");
 });
 
-app.post("/", userVerification);
+app.post("/api/", userVerification);
 
 // Load the /authentication routes
-app.use("/", authRoutes);
+app.use("/api/", authRoutes);
 
 // Load the /artwork routes
-app.use("/artwork", auth, artworkRoutes);
+app.use("/api/artwork", auth, artworkRoutes);
 // app.use("/artwork", artworkRoutes);
 
 // Global error handling
